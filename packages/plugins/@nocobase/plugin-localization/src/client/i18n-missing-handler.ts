@@ -127,7 +127,12 @@ export class MissingKeyHandler {
       });
 
       this.pendingMissingKeys.clear();
-    } catch (error) {
+    } catch (error: any) {
+      // 404 通常表示服务端未启用本地化插件，无需作为错误上报
+      const status = error?.response?.status ?? error?.status;
+      if (status === 404) {
+        return;
+      }
       console.error('[i18n] Failed to submit missing keys:', error);
     }
   }
